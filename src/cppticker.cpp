@@ -11,10 +11,12 @@
 #include <string>
 using namespace std;
 
-std::string parseQuote(std::string rawData);
+void parseData(std::string input);
+double parseQuote(std::string rawData, std::string cid);
+std::string parseCID(std::string rawData);
+std::string parseSymbol(std::string rawData);
 
 int main() {
-
 
 	ifstream in("msft");
 
@@ -24,28 +26,66 @@ int main() {
 		while(in) {
 			std::string input;
 			getline(in, input);
-			std::string quote = parseQuote(input);
-			if (quote.length() > 0) {
-				cout << quote << endl;
-			}
+			parseData(input);
 		}
 	}
-
+	in.close();
 
 	return 0;
 }
 
-std::string parseQuote(std::string rawData) {
-	//var _ticker =
+void parseData(std::string input) {
+	std::string sym = parseSymbol(input);
+	if (sym.length() > 0) {
+		cout << sym << endl;
+	}
+	std::string cid = parseCID(input);
+	if (cid.length() > 0) {
+		cout << cid << endl;
+	}
+	double quote = parseQuote(input, "358464");
+	if (quote > 0.0) {
+		cout << "$" << quote << endl;
+	}
+}
+
+std::string parseCID(std::string rawData) {
+	std::string cid = "";
+	std::string cidLine = "setCompanyId";
+	size_t foundCID = rawData.find(cidLine);
+	if (foundCID != string::npos) {
+		size_t start = rawData.find("(");
+		size_t end = rawData.find(")", start);
+		if (start != string::npos && end != string::npos) {
+			cid = rawData.substr(start+1, (end-start-1));
+		}
+	}
+
+	return cid;
+}
+
+double parseQuote(std::string rawData, std::string cid) {
+	double quote = 0.0;
+	std::string quoteLine = string("ref_")+cid+string("_l");
+	size_t foundQuote = rawData.find(quoteLine);
+	if (foundQuote != string::npos) {
+		cout << rawData << endl;
+		//cout << "start: " << start << "\tend: " << end << endl;
+	}
+	return quote;
+}
+
+std::string parseSymbol(std::string rawData) {
+	std::string symbol = "";
 	std::string tickerLine = "var _ticker =";
 	size_t foundTicker = rawData.find(tickerLine);
 	if (foundTicker != string::npos) {
 		size_t start = rawData.find(":");
 		size_t end = rawData.find("'", start);
-		std::string ticker = rawData.substr(start+1, (end-start-1));
-		cout << foundTicker << start << end << endl;
-		return ticker;
-	} else {
-		return "";
+		if (start != string::npos && end != string::npos) {
+			symbol = rawData.substr(start+1, (end-start-1));
+		}
 	}
+
+	return symbol;
 }
