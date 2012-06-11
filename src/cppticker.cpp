@@ -9,9 +9,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "Instrument.h"
 using namespace std;
 
-void parseData(std::string input);
+void parseData(std::string input, Instrument &i);
 double parseQuote(std::string rawData, std::string cid);
 std::string parseCID(std::string rawData);
 std::string parseSymbol(std::string rawData);
@@ -19,6 +20,7 @@ std::string parseSymbol(std::string rawData);
 int main() {
 
 	ifstream in("msft");
+	Instrument i;
 
 	if (!in) {
 		cerr << "Error reading from file" << endl;
@@ -26,7 +28,7 @@ int main() {
 		while(in) {
 			std::string input;
 			getline(in, input);
-			parseData(input);
+			parseData(input, i);
 		}
 	}
 	in.close();
@@ -34,18 +36,28 @@ int main() {
 	return 0;
 }
 
-void parseData(std::string input) {
-	std::string sym = parseSymbol(input);
-	if (sym.length() > 0) {
-		cout << sym << endl;
+void parseData(std::string input, Instrument &i) {
+	if (i.getSymbol().length() == 0) {
+		std::string sym = parseSymbol(input);
+		if (sym.length() > 0) {
+			i.setSymbol(sym);
+			cout << i.getSymbol() << endl;
+		}
 	}
-	std::string cid = parseCID(input);
-	if (cid.length() > 0) {
-		cout << cid << endl;
+
+	if (i.getCID().length() == 0) {
+		std::string cid = parseCID(input);
+		if (cid.length() > 0) {
+			i.setCID(cid);
+			cout << i.getCID() << endl;
+		}
 	}
-	double quote = parseQuote(input, "358464");
-	if (quote > 0.0) {
-		cout << "$" << quote << endl;
+
+	if (i.getLast() == 0.0) {
+		double quote = parseQuote(input, "358464");
+		if (quote > 0.0) {
+			cout << "$" << quote << endl;
+		}
 	}
 }
 
