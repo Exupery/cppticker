@@ -10,10 +10,12 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <stdio.h>
 #include <curl/curl.h>
 #include "Instrument.h"
 using namespace std;
 
+void curlTest();
 void parseData(std::string input, Instrument &i);
 double parseQuote(std::string rawData, std::string cid);
 std::string parseCID(std::string rawData);
@@ -38,8 +40,19 @@ int main() {
 	cout << "Symbol:\t" << i.getSymbol() << endl;
 	cout << "CID:\t" << i.getCID() << endl;
 	cout << "Last:\t" << "$" << i.getLast() << endl;
-
+	curlTest();
 	return 0;
+}
+
+void curlTest() {
+	CURL *curl;
+	CURLcode res;
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/finance?cid=358464");
+		res = curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+	}
 }
 
 void parseData(std::string input, Instrument &i) {
