@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <curl/curl.h>
 #include "Instrument.h"
 using namespace std;
 
