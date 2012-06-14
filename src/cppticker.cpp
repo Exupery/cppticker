@@ -12,6 +12,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <curl/curl.h>
+#include <curl/easy.h>
 #include "Instrument.h"
 using namespace std;
 
@@ -47,10 +48,21 @@ int main() {
 void curlTest() {
 	CURL *curl;
 	CURLcode res;
+	int buflen = 4096;
+	char buffer[buflen];
+	size_t iolen;
+	curl_off_t nread;
 	curl = curl_easy_init();
 	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/finance?cid=358464");
-		res = curl_easy_perform(curl);
+		//curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/finance?cid=358464");
+		//res = curl_easy_perform(curl);
+		res = curl_easy_recv(curl, buffer, buflen, &iolen);
+		cout << "res:" << res << endl;
+		cout << "iolen:" << iolen << endl;
+		cout << "buflen:" << buflen << endl;
+		cout << "buffer:" << &buffer << endl;
+		nread = (curl_off_t)iolen;
+		cout << "Received:" << nread << " bytes" << endl;
 		curl_easy_cleanup(curl);
 	}
 }
