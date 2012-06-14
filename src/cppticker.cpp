@@ -55,14 +55,18 @@ void curlTest() {
 	curl = curl_easy_init();
 	if (curl) {
 		//curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/finance?cid=358464");
-		//res = curl_easy_perform(curl);
+		curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1/index.html");
 		res = curl_easy_recv(curl, buffer, buflen, &iolen);
 		cout << "res:" << res << endl;
 		cout << "iolen:" << iolen << endl;
 		cout << "buflen:" << buflen << endl;
-		cout << "buffer:" << &buffer << endl;
 		nread = (curl_off_t)iolen;
 		cout << "Received:" << nread << " bytes" << endl;
+
+		for (int i=0; i<4096; i++) {
+			cout << buffer[i];
+		}
+
 		curl_easy_cleanup(curl);
 	}
 }
