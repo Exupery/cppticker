@@ -25,24 +25,14 @@ std::string parseSymbol(std::string rawData);
 int main() {
 
 	string rawData;
-	ifstream in("msft");
 	Instrument i;
 
-	if (!in) {
-		cerr << "Error reading from file" << endl;
-	} else {
-		while(in) {
-			std::string input;
-			getline(in, input);
-			parseData(input, i);
-		}
-	}
-	in.close();
-
+	rawData = curlRead();
+	//cout << rawData << endl;
+	parseData(rawData, i);
 	cout << "Symbol:\t" << i.getSymbol() << endl;
 	cout << "CID:\t" << i.getCID() << endl;
 	cout << "Last:\t" << "$" << i.getLast() << endl;
-	rawData = curlRead();
 
 	return 0;
 }
@@ -62,7 +52,7 @@ std::string curlRead() {
 	curl = curl_easy_init();
 	if (curl) {
 		//curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/finance?cid=358464");
-		curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1/index.html");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1/msft");
 		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWrite);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
