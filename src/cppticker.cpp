@@ -16,7 +16,7 @@
 #include "Instrument.h"
 using namespace std;
 
-void curlTest();
+std::string curlRead();
 void parseData(std::string input, Instrument &i);
 double parseQuote(std::string rawData, std::string cid);
 std::string parseCID(std::string rawData);
@@ -24,6 +24,7 @@ std::string parseSymbol(std::string rawData);
 
 int main() {
 
+	string rawData;
 	ifstream in("msft");
 	Instrument i;
 
@@ -41,34 +42,37 @@ int main() {
 	cout << "Symbol:\t" << i.getSymbol() << endl;
 	cout << "CID:\t" << i.getCID() << endl;
 	cout << "Last:\t" << "$" << i.getLast() << endl;
-	curlTest();
+	rawData = curlRead();
+
 	return 0;
 }
 
-void curlTest() {
+int curlWrite(char *data, size_t size, size_t len, string *buffer) {
+	int result = 0;
+	if (buffer != NULL) {
+		buffer->append(data, size * len);
+		result = size * len;
+	}
+	return result;
+}
+
+std::string curlRead() {
 	CURL *curl;
-	CURLcode res;
-	int buflen = 4096;
-	char buffer[buflen];
-	size_t iolen;
-	curl_off_t nread;
+	string buffer;
 	curl = curl_easy_init();
 	if (curl) {
 		//curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/finance?cid=358464");
 		curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1/index.html");
-		res = curl_easy_recv(curl, buffer, buflen, &iolen);
-		cout << "res:" << res << endl;
-		cout << "iolen:" << iolen << endl;
-		cout << "buflen:" << buflen << endl;
-		nread = (curl_off_t)iolen;
-		cout << "Received:" << nread << " bytes" << endl;
+		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWrite);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
 
-		for (int i=0; i<4096; i++) {
-			cout << buffer[i];
-		}
-
+		curl_easy_perform(curl);
 		curl_easy_cleanup(curl);
+
 	}
+
+	return buffer;
 }
 
 void parseData(std::string input, Instrument &i) {
