@@ -92,13 +92,20 @@ void parseData(std::string input, Instrument &i) {
 
 std::string parseCID(std::string rawData) {
 	std::string cid = "";
-	std::string cidLine = "setCompanyId";
-	size_t foundCID = rawData.find(cidLine);
+	std::string cidMarker = "setCompanyId";
+	size_t foundCID = rawData.find(cidMarker);
 	if (foundCID != string::npos) {
-		size_t start = rawData.find("(");
-		size_t end = rawData.find(")", start);
-		if (start != string::npos && end != string::npos) {
-			cid = rawData.substr(start+1, (end-start-1));
+		std::string cidLine = "";
+		size_t lineStart = rawData.find(cidMarker);
+		size_t lineEnd = rawData.find(";", lineStart);
+		if (lineStart != string::npos && lineEnd != string::npos) {
+			cidLine = rawData.substr(lineStart+1, (lineEnd-lineStart-1));
+
+			size_t start = cidLine.find("(");
+			size_t end = cidLine.find(")", start);
+			if (start != string::npos && end != string::npos) {
+				cid = cidLine.substr(start+1, (end-start-1));
+			}
 		}
 	}
 
