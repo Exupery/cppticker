@@ -54,6 +54,8 @@ std::string curlRead() {
 		//curl_easy_setopt(curl, CURLOPT_URL, "http://www.google.com/finance?cid=358464");
 		curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1/msft");
 		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
+		curl_easy_setopt(curl, CURLOPT_REFERER, "http://www.bing.com/");
+		curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWrite);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
 
