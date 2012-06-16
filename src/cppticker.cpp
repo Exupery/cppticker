@@ -122,14 +122,23 @@ double parseQuote(std::string rawData, std::string cid) {
 
 std::string parseSymbol(std::string rawData) {
 	std::string symbol = "";
-	std::string tickerLine = "var _ticker =";
-	size_t foundTicker = rawData.find(tickerLine);
+	std::string tickerMarker = "var _ticker =";
+	size_t foundTicker = rawData.find(tickerMarker);
 	if (foundTicker != string::npos) {
-		size_t start = rawData.find(":");
-		size_t end = rawData.find("'", start);
-		if (start != string::npos && end != string::npos) {
-			symbol = rawData.substr(start+1, (end-start-1));
+		std::string tickerLine = "";
+		size_t lineStart = rawData.find(tickerMarker);
+		size_t lineEnd = rawData.find(";", lineStart);
+		if (lineStart != string::npos && lineEnd != string::npos) {
+			tickerLine = rawData.substr(lineStart+1, (lineEnd-lineStart-1));
+
+			size_t start = tickerLine.find(":");
+			size_t end = tickerLine.find("'", start);
+			if (start != string::npos && end != string::npos) {
+				symbol = tickerLine.substr(start+1, (end-start-1));
+			}
 		}
+
+
 	}
 
 	return symbol;
