@@ -12,6 +12,7 @@
 #include <sstream>
 #include <set>
 #include <stdio.h>
+#include <string.h>
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include "Instrument.h"
@@ -52,14 +53,15 @@ int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
 std::string curlRead(std::string *symbol) {
 	CURL *curl;
 	std::string buffer;
-	std::string url = "http://127.0.0.1/" + *symbol;
-	//std::string url = "http://www.google.com/finance?cid=358464" + *symbol;
-	std::string userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
+	std::string base = "http://127.0.0.1/" + *symbol;
+	//std::string base = "ttp://www.google.com/finance?cid=358464" + *symbol;
+	const char *url = base.c_str();
+	char userAgent[] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
 	curl = curl_easy_init();
 	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, &url);
+		curl_easy_setopt(curl, CURLOPT_URL, url);
 		curl_easy_setopt(curl, CURLOPT_HEADER, 0);
-		curl_easy_setopt(curl, CURLOPT_REFERER, &url);
+		curl_easy_setopt(curl, CURLOPT_REFERER, url);
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, &userAgent);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWrite);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
