@@ -12,16 +12,16 @@ class Instrument {
 private:
 	std::string symbol;
 	std::string cid;
-	double last;
+	std::string last;
 public:
 	Instrument();
 	virtual ~Instrument();
 	void setSymbol(std::string symbol);
 	void setCID(std::string cid);
-	void setLast(double last);
+	void setLast(std::string last);
 	std::string getSymbol();
 	std::string getCID();
-	double getLast();
+	std::string getLast();
 };
 
 #endif /* INSTRUMENT_H_ */

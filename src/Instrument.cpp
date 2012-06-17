@@ -11,7 +11,7 @@
 Instrument::Instrument() {
 	symbol = "";
 	cid = "";
-	last = 0.0;
+	last = "";
 }
 
 void Instrument::setSymbol(std::string symbol) {
@@ -22,7 +22,7 @@ void Instrument::setCID(std::string cid) {
 	this->cid = cid;
 }
 
-void Instrument::setLast(double last) {
+void Instrument::setLast(std::string last) {
 	this->last = last;
 }
 
@@ -34,7 +34,7 @@ std::string Instrument::getCID() {
 	return cid;
 }
 
-double Instrument::getLast(){
+std::string Instrument::getLast(){
 	return last;
 }
 

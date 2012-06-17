@@ -19,7 +19,7 @@
 
 std::string curlRead(std::string *symbol);
 void parseData(std::string input, Instrument &i);
-double parseQuote(std::string rawData, std::string cid);
+std::string parseQuote(std::string rawData, std::string cid);
 std::string parseCID(std::string rawData);
 std::string parseSymbol(std::string rawData);
 
@@ -28,15 +28,23 @@ int main() {
 	std::string rawData;
 
 	std::set<std::string> symbols;
-	symbols.insert("msft");
+	symbols.insert(".DJI");
+	symbols.insert(".INX");
+	symbols.insert(".IXIC");
+	symbols.insert("MSFT");
 
-	Instrument i;
-	std::string sym = "msft";
-	rawData = curlRead(&sym);
-	parseData(rawData, i);
-	std::cout << "Symbol:\t" << i.getSymbol() << std::endl;
-	std::cout << "CID:\t" << i.getCID() << std::endl;
-	std::cout << "Last:\t" << "$" << i.getLast() << std::endl;
+	std::set<std::string>::const_iterator iter;
+	iter = symbols.begin();
+	while (iter != symbols.end()) {
+		Instrument i;
+		std::string sym = *iter;
+		rawData = curlRead(&sym);
+		parseData(rawData, i);
+		std::cout << "Symbol:\t" << i.getSymbol() << std::endl;
+		std::cout << "CID:\t" << i.getCID() << std::endl;
+		std::cout << "Last:\t" << i.getLast() << std::endl;
+		iter++;
+	}
 
 	return 0;
 }
@@ -53,8 +61,8 @@ int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
 std::string curlRead(std::string *symbol) {
 	CURL *curl;
 	std::string buffer;
-	std::string base = "http://127.0.0.1/" + *symbol;
-	//std::string base = "ttp://www.google.com/finance?cid=358464" + *symbol;
+	//std::string base = "http://127.0.0.1/" + *symbol;
+	std::string base = "http://www.google.com/finance?q=" + *symbol;
 	const char *url = base.c_str();
 	char userAgent[] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
 	curl = curl_easy_init();
@@ -89,9 +97,9 @@ void parseData(std::string input, Instrument &i) {
 		}
 	}
 
-	if (i.getLast() == 0.0) {
-		double quote = parseQuote(input, i.getCID());
-		if (quote > 0.0) {
+	if (i.getLast().length() == 0.0) {
+		std::string quote = parseQuote(input, i.getCID());
+		if (quote.length() > 0.0) {
 			i.setLast(quote);
 		}
 	}
@@ -119,7 +127,25 @@ std::string parseCID(std::string rawData) {
 	return cid;
 }
 
-double parseQuote(std::string rawData, std::string cid) {
+std::string parseQuote(std::string rawData, std::string cid) {
+	std::string quote = "";
+	std::string quoteLine = std::string("ref_")+cid+std::string("_l\">");
+	size_t foundQuote = rawData.find(quoteLine);
+	if (foundQuote != std::string::npos) {
+		size_t start = rawData.find(quoteLine);
+		std::string endString = "</span>";
+		size_t end = rawData.find(endString, start);
+		if (start != std::string::npos && end != std::string::npos) {
+			//std::string quoteString = rawData.substr(start+quoteLine.length(), (end-start-quoteLine.length()));
+			quote = rawData.substr(start+quoteLine.length(), (end-start-quoteLine.length()));
+			//std::istringstream dbl(quoteString);
+			//dbl >> quote;
+		}
+	}
+	return quote;
+}
+
+/*double parseQuote(std::string rawData, std::string cid) {
 	double quote = 0.0;
 	std::string quoteLine = std::string("ref_")+cid+std::string("_l\">");
 	size_t foundQuote = rawData.find(quoteLine);
@@ -134,7 +160,7 @@ double parseQuote(std::string rawData, std::string cid) {
 		}
 	}
 	return quote;
-}
+}*/
 
 std::string parseSymbol(std::string rawData) {
 	std::string symbol = "";
