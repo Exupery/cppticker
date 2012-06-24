@@ -97,8 +97,8 @@ std::string buildURL(const std::set<std::string> &symbols) {
 			tail += ",";
 		}
 	}
-	url = "http://127.0.0.1/gfinance";
-	//url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
+	//url = "http://127.0.0.1/gfinance";
+	url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
 
 	return url;
 }
