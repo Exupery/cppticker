@@ -17,7 +17,8 @@
 #include <curl/easy.h>
 #include "Instrument.h"
 
-std::string curlRead(std::string *symbol);
+std::string curlRead(const std::set<std::string> &symbols);
+std::string buildURL(const std::set<std::string> &symbols);
 void parseData(std::string input, Instrument &i);
 std::string parseQuote(std::string rawData, std::string cid);
 std::string parseChange(std::string rawData, std::string cid);
@@ -34,7 +35,7 @@ int main() {
 	symbols.insert(".INX");
 	symbols.insert("QQQ");
 
-	std::set<std::string>::const_iterator iter;
+	/*std::set<std::string>::const_iterator iter;
 	iter = symbols.begin();
 	while (iter != symbols.end()) {
 		Instrument i;
@@ -43,8 +44,20 @@ int main() {
 		parseData(rawData, i);
 		std::cout << i << std::endl;
 		iter++;
-	}
+	}*/
 
+	rawData = curlRead(symbols);
+	std::set<std::string>::const_iterator iter;
+	iter = symbols.begin();
+	while (iter != symbols.end()) {
+		Instrument i;
+		std::string sym = *iter;
+
+		//parseData(rawData, i);
+		//std::cout << i << std::endl;
+		iter++;
+	}
+	std::cout << rawData << std::endl;
 	return 0;
 }
 
@@ -57,11 +70,15 @@ int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
 	return result;
 }
 
-std::string curlRead(std::string *symbol) {
+std::string curlRead(const std::set<std::string> &symbols) {
 	CURL *curl;
 	std::string buffer;
-	std::string base = "http://127.0.0.1/" + *symbol;
+	std::string based = buildURL(symbols);
+	std::cout << based << std::endl;
+	//std::string base = "http://127.0.0.1/" + *symbol;
 	//std::string base = "http://www.google.com/finance?q=" + *symbol;
+	std::string base = "http://127.0.0.1/gfinance";
+	//std::string base = "http://www.google.com/finance/info?infotype=infoquoteall&q=QQQ,.INX,.DJI";
 	const char *url = base.c_str();
 	char userAgent[] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
 	curl = curl_easy_init();
@@ -79,6 +96,25 @@ std::string curlRead(std::string *symbol) {
 	}
 
 	return buffer;
+}
+
+std::string buildURL(const std::set<std::string> &symbols) {
+	std::string url;
+	std::string tail;
+	std::set<std::string>::const_iterator iter;
+	iter = symbols.begin();
+	while (iter != symbols.end()) {
+		std::string sym = *iter;
+		tail += sym;
+		iter++;
+		if (iter != symbols.end()) {
+			tail += ",";
+		}
+	}
+	url = "http://127.0.0.1/gfinance";
+	//url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
+
+	return url;
 }
 
 void parseData(std::string input, Instrument &i) {
