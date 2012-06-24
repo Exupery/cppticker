@@ -18,7 +18,12 @@ Instrument::Instrument() {
 }
 
 void Instrument::setSymbol(std::string symbol) {
-	this->symbol = symbol;
+	size_t hasDot = symbol.find(".");
+	if (hasDot != std::string::npos) {
+		this->symbol = symbol.substr(hasDot+1);
+	} else {
+		this->symbol = symbol;
+	}
 }
 
 void Instrument::setLast(std::string last) {
@@ -30,7 +35,9 @@ void Instrument::setChange(std::string change) {
 }
 
 void Instrument::setChangePercent(std::string changePercent) {
-	this->changePercent = changePercent + "%";
+	if (changePercent.length() > 0) {
+		this->changePercent = changePercent + "%";
+	}
 }
 
 std::string Instrument::getSymbol() {
