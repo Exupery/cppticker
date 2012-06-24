@@ -41,11 +41,7 @@ int main() {
 		std::string sym = *iter;
 		rawData = curlRead(&sym);
 		parseData(rawData, i);
-		std::cout << "Symbol:\t" << i.getSymbol() << std::endl;
-		std::cout << "CID:\t" << i.getCID() << std::endl;
-		std::cout << "Last:\t" << i.getLast() << std::endl;
-		std::cout << "Change:\t" << i.getChange() << std::endl;
-		std::cout << "Change Percent:\t" << i.getChangePercent() << std::endl;
+		std::cout << i << std::endl;
 		iter++;
 	}
 
@@ -194,20 +190,14 @@ std::string parseChangePercent(std::string rawData, std::string cid) {
 
 std::string parseSymbol(std::string rawData) {
 	std::string symbol = "";
-	std::string tickerMarker = "var _ticker =";
+	std::string tickerMarker = "<div class=appbar-snippet-secondary><span>(";
 	size_t foundTicker = rawData.find(tickerMarker);
 	if (foundTicker != std::string::npos) {
 		std::string tickerLine = "";
 		size_t lineStart = rawData.find(tickerMarker);
-		size_t lineEnd = rawData.find(";", lineStart);
+		size_t lineEnd = rawData.find(")</span>", lineStart);
 		if (lineStart != std::string::npos && lineEnd != std::string::npos) {
-			tickerLine = rawData.substr(lineStart+1, (lineEnd-lineStart-1));
-
-			size_t start = tickerLine.find(":");
-			size_t end = tickerLine.find("'", start);
-			if (start != std::string::npos && end != std::string::npos) {
-				symbol = tickerLine.substr(start+1, (end-start-1));
-			}
+			symbol = rawData.substr(lineStart+tickerMarker.length(), (lineEnd-lineStart-tickerMarker.length()));
 		}
 
 

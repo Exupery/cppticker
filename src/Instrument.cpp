@@ -7,6 +7,8 @@
 
 #include "Instrument.h"
 #include <string>
+#include <iostream>
+#include <iomanip>
 
 Instrument::Instrument() {
 	symbol = "";
@@ -58,5 +60,10 @@ std::string Instrument::getChangePercent(){
 
 Instrument::~Instrument() {
 
+}
+
+std::ostream& operator<<(std::ostream& out, const Instrument& i) {
+	out << i.symbol << "\t" << std::setw(10) << i.last << std::setw(10) << i.change << std::setw(8) << i.changePercent;
+	return out;
 }
 

@@ -5,10 +5,12 @@
  *      Author: frost
  */
 #include <string>
+#include <iostream>
 #ifndef INSTRUMENT_H_
 #define INSTRUMENT_H_
 
 class Instrument {
+friend std::ostream& operator<<(std::ostream& out, const Instrument& i);
 private:
 	std::string symbol;
 	std::string cid;
