@@ -12,7 +12,6 @@
 
 Instrument::Instrument() {
 	symbol = "";
-	cid = "";
 	last = "";
 	change = "";
 	changePercent = "";
@@ -20,10 +19,6 @@ Instrument::Instrument() {
 
 void Instrument::setSymbol(std::string symbol) {
 	this->symbol = symbol;
-}
-
-void Instrument::setCID(std::string cid) {
-	this->cid = cid;
 }
 
 void Instrument::setLast(std::string last) {
@@ -35,15 +30,11 @@ void Instrument::setChange(std::string change) {
 }
 
 void Instrument::setChangePercent(std::string changePercent) {
-	this->changePercent = changePercent;
+	this->changePercent = changePercent + "%";
 }
 
 std::string Instrument::getSymbol() {
 	return symbol;
-}
-
-std::string Instrument::getCID() {
-	return cid;
 }
 
 std::string Instrument::getLast(){
@@ -63,7 +54,7 @@ Instrument::~Instrument() {
 }
 
 std::ostream& operator<<(std::ostream& out, const Instrument& i) {
-	out << i.symbol << "\t" << std::setw(10) << i.last << std::setw(10) << i.change << std::setw(8) << i.changePercent;
+	out << std::setw(6) << std::left << i.symbol << std::right << std::setw(10) << i.last << std::setw(10) << i.change << std::setw(8) << i.changePercent;
 	return out;
 }
 
