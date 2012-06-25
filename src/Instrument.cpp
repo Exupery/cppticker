@@ -56,11 +56,11 @@ std::string Instrument::getChangePercent(){
 	return changePercent;
 }
 
-Instrument::~Instrument() {
-
+bool Instrument::operator<(const Instrument& i) const {
+	return (this->symbol.compare(i.symbol) < 0);
 }
 
-bool isPositive(const std::string& change) {
+bool Instrument::isPositive() const {
 	size_t plus = change.find("+");
 	if (plus != std::string::npos) {
 		return true;
@@ -69,9 +69,13 @@ bool isPositive(const std::string& change) {
 	}
 }
 
+Instrument::~Instrument() {
+
+}
+
 std::ostream& operator<<(std::ostream& out, const Instrument& i) {
 	out << std::setw(6) << std::left << i.symbol << std::right << std::setw(10) << i.last;
-	if (isPositive(i.change)) {
+	if (i.isPositive()) {
 		out << "\033[1;32m" << std::setw(10) << i.change << std::setw(8) << i.changePercent;
 	} else {
 		out << "\033[1;31m" << std::setw(10) << i.change << std::setw(8) << i.changePercent;

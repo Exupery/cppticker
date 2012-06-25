@@ -27,6 +27,8 @@ public:
 	std::string getLast();
 	std::string getChange();
 	std::string getChangePercent();
+	bool isPositive() const;
+	bool operator<(const Instrument& i) const;
 };
 
 #endif /* INSTRUMENT_H_ */

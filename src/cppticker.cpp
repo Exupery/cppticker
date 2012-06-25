@@ -25,28 +25,42 @@ std::string parseJSON(std::string input, std::string field);
 int main() {
 
 	std::string rawData;
-
 	std::set<std::string> symbols;
+	std::set<Instrument> instruments;
+	int iterationInterval = 8;
+	int symbolInterval = 1;
 	symbols.insert(".DJI");
 	symbols.insert(".INX");
 	symbols.insert("QQQ");
 
-	rawData = curlRead(symbols);
 	std::set<std::string>::const_iterator iter;
 	iter = symbols.begin();
 	while (iter != symbols.end()) {
 		Instrument i;
 		std::string sym = *iter;
 		i.setSymbol(sym);
-		std::string json = parseData(rawData, i);
-		std::string last = parseJSON(json, "l_cur");
-		std::string change = parseJSON(json, "c");
-		std::string changePercent = parseJSON(json, "cp");
-		i.setLast(last);
-		i.setChange(change);
-		i.setChangePercent(changePercent);
-		std::cout << i << std::endl;
+		instruments.insert(i);
 		iter++;
+	}
+
+	while (true) {
+		rawData = curlRead(symbols);
+		std::set<Instrument>::const_iterator instIter;
+		instIter = instruments.begin();
+		while (instIter != instruments.end()) {
+			Instrument i = *instIter;
+			std::string json = parseData(rawData, i);
+			std::string last = parseJSON(json, "l_cur");
+			std::string change = parseJSON(json, "c");
+			std::string changePercent = parseJSON(json, "cp");
+			i.setLast(last);
+			i.setChange(change);
+			i.setChangePercent(changePercent);
+			std::cout << i << std::endl;
+			instIter++;
+			sleep(symbolInterval);
+		}
+		sleep(iterationInterval);
 	}
 
 	return 0;
@@ -97,8 +111,8 @@ std::string buildURL(const std::set<std::string> &symbols) {
 			tail += ",";
 		}
 	}
-	//url = "http://127.0.0.1/gfinance";
-	url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
+	url = "http://127.0.0.1/gfinance";
+	//url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
 
 	return url;
 }
