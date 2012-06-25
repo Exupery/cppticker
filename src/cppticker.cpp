@@ -22,7 +22,7 @@ std::string buildURL(const std::set<std::string> &symbols);
 std::string parseData(std::string input, Instrument &i);
 std::string parseJSON(std::string input, std::string field);
 
-int main() {
+int main(int argc, char *argv[]) {
 
 	std::string rawData;
 	std::set<std::string> symbols;
@@ -32,6 +32,12 @@ int main() {
 	symbols.insert(".DJI");
 	symbols.insert(".INX");
 	symbols.insert("QQQ");
+
+	if (argc > 1) {
+		for (int i=1; i<argc; i++) {
+			symbols.insert(argv[i]);
+		}
+	}
 
 	std::set<std::string>::const_iterator iter;
 	iter = symbols.begin();
@@ -111,8 +117,8 @@ std::string buildURL(const std::set<std::string> &symbols) {
 			tail += ",";
 		}
 	}
-	url = "http://127.0.0.1/gfinance";
-	//url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
+	//url = "http://127.0.0.1/gfinance";
+	url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
 
 	return url;
 }

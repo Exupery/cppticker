@@ -18,6 +18,11 @@ Instrument::Instrument() {
 }
 
 void Instrument::setSymbol(std::string symbol) {
+	for (unsigned int i=0; i<symbol.length(); i++) {
+		if (symbol[i] >= 'a' && symbol[i] <= 'z') {
+			symbol[i] += ('A' - 'a');
+		}
+	}
 	size_t hasDot = symbol.find(".");
 	if (hasDot != std::string::npos) {
 		this->symbol = symbol.substr(hasDot+1);
