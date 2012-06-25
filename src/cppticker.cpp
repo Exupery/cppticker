@@ -27,8 +27,8 @@ int main(int argc, char *argv[]) {
 	std::string rawData;
 	std::set<std::string> symbols;
 	std::set<Instrument> instruments;
-	int iterationInterval = 8;
-	int symbolInterval = 1;
+	int iterationInterval = 300;
+	int symbolInterval = 2;
 	symbols.insert(".DJI");
 	symbols.insert(".INX");
 	symbols.insert("QQQ");
@@ -121,8 +121,8 @@ std::string buildURL(const std::set<std::string> &symbols) {
 			tail += ",";
 		}
 	}
-	url = "http://127.0.0.1/gfinance";
-	//url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
+	//url = "http://127.0.0.1/gfinance";
+	url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
 
 	return url;
 }
