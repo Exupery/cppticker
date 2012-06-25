@@ -59,9 +59,13 @@ int main(int argc, char *argv[]) {
 			std::string last = parseJSON(json, "l_cur");
 			std::string change = parseJSON(json, "c");
 			std::string changePercent = parseJSON(json, "cp");
+			std::string high = parseJSON(json, "hi");
+			std::string low = parseJSON(json, "lo");
 			i.setLast(last);
 			i.setChange(change);
 			i.setChangePercent(changePercent);
+			i.setHigh(high);
+			i.setLow(low);
 			std::cout << i << std::endl;
 			instIter++;
 			sleep(symbolInterval);
@@ -117,8 +121,8 @@ std::string buildURL(const std::set<std::string> &symbols) {
 			tail += ",";
 		}
 	}
-	//url = "http://127.0.0.1/gfinance";
-	url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
+	url = "http://127.0.0.1/gfinance";
+	//url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
 
 	return url;
 }

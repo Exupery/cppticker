@@ -13,6 +13,8 @@
 Instrument::Instrument() {
 	symbol = "";
 	last = "";
+	high = "";
+	low = "";
 	change = "";
 	changePercent = "";
 }
@@ -35,6 +37,14 @@ void Instrument::setLast(std::string last) {
 	this->last = last;
 }
 
+void Instrument::setHigh(std::string high) {
+	this->high = high;
+}
+
+void Instrument::setLow(std::string low) {
+	this->low = low;
+}
+
 void Instrument::setChange(std::string change) {
 	this->change = change;
 }
@@ -51,6 +61,14 @@ std::string Instrument::getSymbol() {
 
 std::string Instrument::getLast(){
 	return last;
+}
+
+std::string Instrument::getHigh(){
+	return high;
+}
+
+std::string Instrument::getLow(){
+	return low;
 }
 
 std::string Instrument::getChange(){
@@ -85,7 +103,7 @@ std::ostream& operator<<(std::ostream& out, const Instrument& i) {
 	} else {
 		out << "\033[1;31m" << std::setw(10) << i.change << std::setw(8) << i.changePercent;
 	}
-	out << "\033[0m";
+	out << "\033[0m" <<  std::setw(12) << i.low << " - " <<  std::setw(10) << std::left << i.high;
 	return out;
 }
 
