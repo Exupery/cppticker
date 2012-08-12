@@ -40,46 +40,45 @@ int main(int argc, char *argv[]) {
 		for (int i=1; i<argc; i++) {
 			if (isNumber(argv[i])) {
 				iterationInterval = parseIterationInterval(argv[i]);
-				std::cout << "Setting interval to " << iterationInterval << std::endl;
 			} else {
 				symbols.insert(argv[i]);
 			}
 		}
 	}
 
-//	std::set<std::string>::const_iterator iter;
-//	iter = symbols.begin();
-//	while (iter != symbols.end()) {
-//		Instrument i;
-//		std::string sym = *iter;
-//		i.setSymbol(sym);
-//		instruments.insert(i);
-//		iter++;
-//	}
-//
-//	while (true) {
-//		rawData = curlRead(symbols);
-//		std::set<Instrument>::const_iterator instIter;
-//		instIter = instruments.begin();
-//		while (instIter != instruments.end()) {
-//			Instrument i = *instIter;
-//			std::string json = parseData(rawData, i);
-//			std::string last = parseJSON(json, "l_cur");
-//			std::string change = parseJSON(json, "c");
-//			std::string changePercent = parseJSON(json, "cp");
-//			std::string high = parseJSON(json, "hi");
-//			std::string low = parseJSON(json, "lo");
-//			i.setLast(last);
-//			i.setChange(change);
-//			i.setChangePercent(changePercent);
-//			i.setHigh(high);
-//			i.setLow(low);
-//			std::cout << i << std::endl;
-//			instIter++;
-//			sleep(symbolInterval);
-//		}
-//		sleep(iterationInterval);
-//	}
+	std::set<std::string>::const_iterator iter;
+	iter = symbols.begin();
+	while (iter != symbols.end()) {
+		Instrument i;
+		std::string sym = *iter;
+		i.setSymbol(sym);
+		instruments.insert(i);
+		iter++;
+	}
+
+	while (true) {
+		rawData = curlRead(symbols);
+		std::set<Instrument>::const_iterator instIter;
+		instIter = instruments.begin();
+		while (instIter != instruments.end()) {
+			Instrument i = *instIter;
+			std::string json = parseData(rawData, i);
+			std::string last = parseJSON(json, "l_cur");
+			std::string change = parseJSON(json, "c");
+			std::string changePercent = parseJSON(json, "cp");
+			std::string high = parseJSON(json, "hi");
+			std::string low = parseJSON(json, "lo");
+			i.setLast(last);
+			i.setChange(change);
+			i.setChangePercent(changePercent);
+			i.setHigh(high);
+			i.setLow(low);
+			std::cout << i << std::endl;
+			instIter++;
+			sleep(symbolInterval);
+		}
+		sleep(iterationInterval);
+	}
 
 	return 0;
 }
@@ -101,9 +100,8 @@ int parseIterationInterval(const char* str) {
 			std::cin >> rawEntry;
 		}
 	}
-	std::cout << rawEntry << std::endl;
 
-	return 0;
+	return rawEntry * 60;
 }
 
 int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
