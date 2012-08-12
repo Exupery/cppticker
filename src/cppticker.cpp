@@ -13,6 +13,7 @@
 #include <set>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include "Instrument.h"
@@ -22,6 +23,7 @@ std::string buildURL(const std::set<std::string> &symbols);
 std::string parseData(std::string input, Instrument &i);
 std::string parseJSON(std::string input, std::string field);
 bool isNumber(const std::string& str);
+int parseIterationInterval(const char* str);
 
 int main(int argc, char *argv[]) {
 
@@ -37,56 +39,71 @@ int main(int argc, char *argv[]) {
 	if (argc > 1) {
 		for (int i=1; i<argc; i++) {
 			if (isNumber(argv[i])) {
-				std::cout << "Setting interval to " << argv[i] << std::endl;
+				iterationInterval = parseIterationInterval(argv[i]);
+				std::cout << "Setting interval to " << iterationInterval << std::endl;
 			} else {
 				symbols.insert(argv[i]);
 			}
 		}
 	}
 
-	std::set<std::string>::const_iterator iter;
-	iter = symbols.begin();
-	while (iter != symbols.end()) {
-		Instrument i;
-		std::string sym = *iter;
-		i.setSymbol(sym);
-		instruments.insert(i);
-		iter++;
-	}
-
-	while (true) {
-		rawData = curlRead(symbols);
-		std::set<Instrument>::const_iterator instIter;
-		instIter = instruments.begin();
-		while (instIter != instruments.end()) {
-			Instrument i = *instIter;
-			std::string json = parseData(rawData, i);
-			std::string last = parseJSON(json, "l_cur");
-			std::string change = parseJSON(json, "c");
-			std::string changePercent = parseJSON(json, "cp");
-			std::string high = parseJSON(json, "hi");
-			std::string low = parseJSON(json, "lo");
-			i.setLast(last);
-			i.setChange(change);
-			i.setChangePercent(changePercent);
-			i.setHigh(high);
-			i.setLow(low);
-			std::cout << i << std::endl;
-			instIter++;
-			sleep(symbolInterval);
-		}
-		sleep(iterationInterval);
-	}
+//	std::set<std::string>::const_iterator iter;
+//	iter = symbols.begin();
+//	while (iter != symbols.end()) {
+//		Instrument i;
+//		std::string sym = *iter;
+//		i.setSymbol(sym);
+//		instruments.insert(i);
+//		iter++;
+//	}
+//
+//	while (true) {
+//		rawData = curlRead(symbols);
+//		std::set<Instrument>::const_iterator instIter;
+//		instIter = instruments.begin();
+//		while (instIter != instruments.end()) {
+//			Instrument i = *instIter;
+//			std::string json = parseData(rawData, i);
+//			std::string last = parseJSON(json, "l_cur");
+//			std::string change = parseJSON(json, "c");
+//			std::string changePercent = parseJSON(json, "cp");
+//			std::string high = parseJSON(json, "hi");
+//			std::string low = parseJSON(json, "lo");
+//			i.setLast(last);
+//			i.setChange(change);
+//			i.setChangePercent(changePercent);
+//			i.setHigh(high);
+//			i.setLow(low);
+//			std::cout << i << std::endl;
+//			instIter++;
+//			sleep(symbolInterval);
+//		}
+//		sleep(iterationInterval);
+//	}
 
 	return 0;
 }
 
 bool isNumber(const std::string& str) {
 	std::string::const_iterator iter = str.begin();
-	while (iter != str.end() && std::isdigit(*iter)) {
+	while (iter != str.end() && (std::isdigit(*iter) || *iter=='-' || *iter=='.')) {
 		++iter;
 	}
 	return !str.empty() && iter == str.end();
+}
+
+int parseIterationInterval(const char* str) {
+	double rawEntry = atof(str);
+	if (rawEntry < 1) {
+		while (rawEntry < 1) {
+			std::cout << "Interval cannot be less than one minute!" << std::endl;
+			std:: cout << "Please enter a larger number: ";
+			std::cin >> rawEntry;
+		}
+	}
+	std::cout << rawEntry << std::endl;
+
+	return 0;
 }
 
 int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
@@ -134,7 +151,7 @@ std::string buildURL(const std::set<std::string> &symbols) {
 			tail += ",";
 		}
 	}
-	//url = "http://127.0.0.1/gfinance";
+
 	url = "http://www.google.com/finance/info?infotype=infoquoteall&q=" + tail;
 
 	return url;
