@@ -1,7 +1,7 @@
 //============================================================================
 // Name        : cppticker.cpp
 // Author      : Matthew Frost
-// Version     : 0.1
+// Version     : 0.2
 // Copyright   : "BEER-WARE LICENSE"
 // Description : Stock ticker
 //============================================================================
@@ -21,6 +21,7 @@ std::string curlRead(const std::set<std::string> &symbols);
 std::string buildURL(const std::set<std::string> &symbols);
 std::string parseData(std::string input, Instrument &i);
 std::string parseJSON(std::string input, std::string field);
+bool isNumber(const std::string& str);
 
 int main(int argc, char *argv[]) {
 
@@ -35,7 +36,11 @@ int main(int argc, char *argv[]) {
 
 	if (argc > 1) {
 		for (int i=1; i<argc; i++) {
-			symbols.insert(argv[i]);
+			if (isNumber(argv[i])) {
+				std::cout << "Setting interval to " << argv[i] << std::endl;
+			} else {
+				symbols.insert(argv[i]);
+			}
 		}
 	}
 
@@ -74,6 +79,14 @@ int main(int argc, char *argv[]) {
 	}
 
 	return 0;
+}
+
+bool isNumber(const std::string& str) {
+	std::string::const_iterator iter = str.begin();
+	while (iter != str.end() && std::isdigit(*iter)) {
+		++iter;
+	}
+	return !str.empty() && iter == str.end();
 }
 
 int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
