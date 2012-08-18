@@ -1,10 +1,12 @@
-//============================================================================
-// Name        : cppticker.cpp
-// Author      : Matthew Frost
-// Version     : 0.2
-// Copyright   : "BEER-WARE LICENSE"
-// Description : Stock ticker
-//============================================================================
+/*
++=======================================================+
+|	Name        : cppticker.cpp							|
+|	Author      : Matthew Frost							|
+|	Version     : 0.2									|
+|	Copyright   : "BEER-WARE LICENSE"					|
+|	Description : Stock ticker							|
++=======================================================+
+*/
 
 #include <iostream>
 #include <fstream>
@@ -23,9 +25,9 @@ std::string buildURL(const std::set<std::string> &symbols);
 std::string parseData(std::string input, Instrument &i);
 std::string parseJSON(std::string input, std::string field);
 bool isNumber(const std::string& str);
-int parseIterationInterval(const char* str);
+int parseIterationInterval(const char * str);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char * argv[]) {
 
 	std::string rawData;
 	std::set<std::string> symbols;
@@ -91,7 +93,7 @@ bool isNumber(const std::string& str) {
 	return !str.empty() && iter == str.end();
 }
 
-int parseIterationInterval(const char* str) {
+int parseIterationInterval(const char * str) {
 	double rawEntry = atof(str);
 	if (rawEntry < 1) {
 		while (rawEntry < 1) {
@@ -104,7 +106,7 @@ int parseIterationInterval(const char* str) {
 	return rawEntry * 60;
 }
 
-int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
+int curlWrite(char *data, size_t size, size_t len, std::string * buffer) {
 	int result = 0;
 	if (buffer != NULL) {
 		buffer->append(data, size * len);
@@ -114,10 +116,10 @@ int curlWrite(char *data, size_t size, size_t len, std::string *buffer) {
 }
 
 std::string curlRead(const std::set<std::string> &symbols) {
-	CURL *curl;
+	CURL * curl;
 	std::string buffer;
 	std::string base = buildURL(symbols);
-	const char *url = base.c_str();
+	const char * url = base.c_str();
 	char userAgent[] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
 	curl = curl_easy_init();
 	if (curl) {
