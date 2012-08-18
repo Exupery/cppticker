@@ -20,12 +20,14 @@
 #include <curl/easy.h>
 #include "Instrument.h"
 
-std::string curlRead(const std::set<std::string> &symbols);
 std::string buildURL(const std::set<std::string> &symbols);
+std::string curlRead(const std::set<std::string> &symbols);
+int curlWrite(char * data, size_t size, size_t len, std::string * buffer);
+bool isNumber(const std::string& str);
 std::string parseData(std::string input, Instrument &i);
 std::string parseJSON(std::string input, std::string field);
-bool isNumber(const std::string& str);
 int parseIterationInterval(const char * str);
+
 
 int main(int argc, char * argv[]) {
 
@@ -106,7 +108,7 @@ int parseIterationInterval(const char * str) {
 	return rawEntry * 60;
 }
 
-int curlWrite(char *data, size_t size, size_t len, std::string * buffer) {
+int curlWrite(char * data, size_t size, size_t len, std::string * buffer) {
 	int result = 0;
 	if (buffer != NULL) {
 		buffer->append(data, size * len);
