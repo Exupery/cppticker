@@ -23,7 +23,7 @@
 std::string buildURL(const std::set<std::string> &symbols);
 std::string curlRead(const std::set<std::string> &symbols);
 int curlWrite(char * data, size_t size, size_t len, std::string * buffer);
-bool isNumber(const std::string& str);
+bool isNumber(const std::string &str);
 std::string parseData(std::string input, Instrument &i);
 std::string parseJSON(std::string input, std::string field);
 int parseIterationInterval(const char * str);
