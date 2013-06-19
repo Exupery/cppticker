@@ -59,23 +59,23 @@ std::string Instrument::getSymbol() {
 	return symbol;
 }
 
-std::string Instrument::getLast(){
+std::string Instrument::getLast() {
 	return last;
 }
 
-std::string Instrument::getHigh(){
+std::string Instrument::getHigh() {
 	return high;
 }
 
-std::string Instrument::getLow(){
+std::string Instrument::getLow() {
 	return low;
 }
 
-std::string Instrument::getChange(){
+std::string Instrument::getChange() {
 	return change;
 }
 
-std::string Instrument::getChangePercent(){
+std::string Instrument::getChangePercent() {
 	return changePercent;
 }
 
