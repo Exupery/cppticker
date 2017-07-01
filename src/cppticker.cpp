@@ -1,13 +1,3 @@
-/*
-+=======================================================+
-|  Name        : cppticker.cpp              |
-|  Author      : Matthew Frost              |
-|  Version     : 0.2                  |
-|  Copyright   : "BEER-WARE LICENSE"          |
-|  Description : Stock ticker              |
-+=======================================================+
-*/
-
 #include <iostream>
 #include <fstream>
 #include <string>

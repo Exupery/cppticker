@@ -1,9 +1,3 @@
-/*
- * Instrument.h
- *
- *  Created on: Jun 10, 2012
- *      Author: frost
- */
 #include <string>
 #include <iostream>
 #ifndef INSTRUMENT_H_

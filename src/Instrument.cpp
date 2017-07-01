@@ -1,10 +1,3 @@
-/*
- * Instrument.cpp
- *
- *  Created on: Jun 10, 2012
- *      Author: frost
- */
-
 #include "Instrument.h"
 #include <string>
 #include <iostream>
