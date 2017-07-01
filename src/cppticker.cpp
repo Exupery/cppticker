@@ -1,13 +1,18 @@
-#include <iostream>
+#include <chrono>
 #include <fstream>
-#include <string>
-#include <sstream>
+#include <iostream>
 #include <set>
+#include <sstream>
+#include <string>
+#include <thread>
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include <curl/curl.h>
 #include <curl/easy.h>
+
 #include "Instrument.h"
 
 std::string buildURL(const std::set<std::string> &symbols);
@@ -69,9 +74,9 @@ int main(int argc, char * argv[]) {
       i.setLow(low);
       std::cout << i << std::endl;
       instIter++;
-      sleep(symbolInterval);
+      std::this_thread::sleep_for(std::chrono::seconds(symbolInterval));
     }
-    sleep(iterationInterval);
+    std::this_thread::sleep_for(std::chrono::seconds(iterationInterval));
   }
 
   return 0;
