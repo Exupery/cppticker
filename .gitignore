@@ -2,5 +2,17 @@
 .cproject
 .settings
 .vscode/
+
+# GENERATED FILES
+*.o
 Debug/
 cppticker
+
+# AUTOMAKE FILES
+aclocal.m4
+autom4te.cache/
+config.h
+config.log
+config.status
+src/.deps/
+stamp-h1
