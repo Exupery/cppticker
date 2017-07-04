@@ -22,7 +22,7 @@ The default update interval is set to 15 minutes between update polling, with tw
 ## Compiling
 
 ##### Via [GCC](https://gcc.gnu.org/onlinedocs/gcc-5.4.0/gcc/G_002b_002b-and-GCC.html)
-`g++ -std=c++11 src/*.cpp -lcurl -o cppticker`
+`g++ -std=c++11 src/*.cpp src/json.hpp -lcurl -o cppticker`
 
 ##### Via [Make](https://www.gnu.org/software/make/manual/make.html)
 `.configure && make`

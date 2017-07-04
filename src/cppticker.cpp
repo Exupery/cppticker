@@ -13,6 +13,8 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
+#include "json.hpp"
+
 #include "Instrument.h"
 
 const std::string URL_BASE = "http://www.google.com/finance/info?infotype=infoquoteall&q=";
@@ -21,7 +23,7 @@ std::string buildURL(const std::set<std::string> &symbols);
 std::string curlRead(const std::set<std::string> &symbols);
 int curlWrite(char * data, size_t size, size_t len, std::string * buffer);
 bool isNumber(const std::string &str);
-std::string parseData(std::string input, Instrument &i);
+std::set<Instrument> parseData(std::string input);
 std::string parseJSON(std::string input, std::string field);
 int parseIterationInterval(const char * str);
 
@@ -29,7 +31,6 @@ int main(int argc, char * argv[]) {
 
   std::string rawData;
   std::set<std::string> symbols;
-  std::set<Instrument> instruments;
   int iterationInterval = 300;
   int symbolInterval = 2;
   symbols.insert(".DJI");
@@ -46,35 +47,10 @@ int main(int argc, char * argv[]) {
     }
   }
 
-  std::set<std::string>::const_iterator iter;
-  iter = symbols.begin();
-  while (iter != symbols.end()) {
-    Instrument i;
-    std::string sym = *iter;
-    i.setSymbol(sym);
-    instruments.insert(i);
-    iter++;
-  }
-
   while (true) {
     rawData = curlRead(symbols);
-    std::set<Instrument>::const_iterator instIter;
-    instIter = instruments.begin();
-    while (instIter != instruments.end()) {
-      Instrument i = *instIter;
-      std::string json = parseData(rawData, i);
-      std::string last = parseJSON(json, "l_cur");
-      std::string change = parseJSON(json, "c");
-      std::string changePercent = parseJSON(json, "cp");
-      std::string high = parseJSON(json, "hi");
-      std::string low = parseJSON(json, "lo");
-      i.setLast(last);
-      i.setChange(change);
-      i.setChangePercent(changePercent);
-      i.setHigh(high);
-      i.setLow(low);
+    for (Instrument i : parseData(rawData)) {
       std::cout << i << std::endl;
-      instIter++;
       std::this_thread::sleep_for(std::chrono::seconds(symbolInterval));
     }
     std::this_thread::sleep_for(std::chrono::seconds(iterationInterval));
@@ -133,6 +109,11 @@ std::string curlRead(const std::set<std::string> &symbols) {
 
   }
 
+  std::string::size_type jsonStart = buffer.find("[");
+  if (jsonStart != 0) {
+    buffer.erase(0, jsonStart);
+  }
+
   return buffer;
 }
 
@@ -152,25 +133,20 @@ std::string buildURL(const std::set<std::string> &symbols) {
   return URL_BASE + tail;
 }
 
-std::string parseData(std::string input, Instrument &i) {
-  std::string json = "";
-  size_t start = input.find(i.getSymbol());
-  size_t end = input.find("}", start);
-  if (start != std::string::npos && end != std::string::npos) {
-    json = input.substr(start, end - start);
+std::set<Instrument> parseData(std::string input) {
+  std::set<Instrument> instruments;
+  for (nlohmann::json json : nlohmann::json::parse(input)) {
+    Instrument i;
+
+    i.setSymbol(json["t"]);
+    i.setLast(json["l_cur"]);
+    i.setChange(json["c"]);
+    i.setChangePercent(json["cp"]);
+    i.setHigh(json["hi"]);
+    i.setLow(json["lo"]);
+
+    instruments.insert(i);
   }
 
-  return json;
-}
-
-std::string parseJSON(std::string input, std::string field) {
-  std::string fieldValue = "";
-  std::string fullField = "\""+field+"\" : \"";
-  size_t start = input.find(fullField);
-  size_t end = input.find("\"", start+fullField.length());
-  if (start != std::string::npos && end != std::string::npos) {
-    fieldValue = input.substr(start+fullField.length(), (end-start-fullField.length()));
-  }
-
-  return fieldValue;
+  return instruments;
 }
