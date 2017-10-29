@@ -22,6 +22,8 @@ The default update interval is set to 15 minutes between update polling, with tw
 
 ## Compiling
 
+Regardless of which method is used a `g++` version of [4.9](https://gcc.gnu.org/gcc-4.9/) or higher is *required*.
+
 ##### Via [GCC](https://gcc.gnu.org/onlinedocs/gcc-5.4.0/gcc/G_002b_002b-and-GCC.html)
 `g++ -std=c++11 src/*.cpp src/json.hpp -lcurl -o cppticker`
 
