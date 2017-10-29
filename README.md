@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Exupery/cppticker.svg)](https://travis-ci.org/Exupery/cppticker)
 # C++Ticker
 
 Command line stock ticker. Uses Google's Finance API to show information about US stocks and indices.
