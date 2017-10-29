@@ -26,7 +26,7 @@ The default update interval is set to 15 minutes between update polling, with tw
 `g++ -std=c++11 src/*.cpp src/json.hpp -lcurl -o cppticker`
 
 ##### Via [Make](https://www.gnu.org/software/make/manual/make.html)
-`.configure && make`
+`./configure && make`
 
 ## Requirements
 
