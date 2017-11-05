@@ -29,6 +29,7 @@ Regardless of which method is used a `g++` version of [4.9](https://gcc.gnu.org/
 
 ##### Via [Make](https://www.gnu.org/software/make/manual/make.html)
 `./configure && make`
+(If running this results in an error similar to `WARNING: 'automake-1.15' is missing on your system` this _may_ be resolved by running `autoreconf -f -i` first)
 
 ## Requirements
 
