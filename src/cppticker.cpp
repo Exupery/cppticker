@@ -17,7 +17,7 @@
 
 #include "Instrument.h"
 
-const std::string URL_BASE = "http://www.google.com/finance/info?infotype=infoquoteall&q=";
+const std::string URL_BASE = "https://api.iextrading.com/1.0/stock/market/batch?types=quote&symbols=";
 
 std::string buildURL(const std::set<std::string> &symbols);
 std::string curlRead(const std::set<std::string> &symbols);
@@ -33,8 +33,8 @@ int main(int argc, char * argv[]) {
   std::set<std::string> symbols;
   int iterationInterval = 300;
   int symbolInterval = 2;
-  symbols.insert(".DJI");
-  symbols.insert(".INX");
+  symbols.insert("DIA");
+  symbols.insert("SPY");
   symbols.insert("QQQ");
 
   if (argc > 1) {
@@ -94,24 +94,17 @@ std::string curlRead(const std::set<std::string> &symbols) {
   std::string buffer;
   std::string base = buildURL(symbols);
   const char * url = base.c_str();
-  char userAgent[] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
   curl = curl_easy_init();
   if (curl) {
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_HEADER, 0);
     curl_easy_setopt(curl, CURLOPT_REFERER, url);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, &userAgent);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWrite);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
 
     curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
-  }
-
-  std::string::size_type jsonStart = buffer.find("[");
-  if (jsonStart != 0) {
-    buffer.erase(0, jsonStart);
   }
 
   return buffer;
@@ -136,14 +129,15 @@ std::string buildURL(const std::set<std::string> &symbols) {
 std::set<Instrument> parseData(std::string input) {
   std::set<Instrument> instruments;
   for (nlohmann::json json : nlohmann::json::parse(input)) {
+    nlohmann::json quote = json["quote"];
     Instrument i;
 
-    i.setSymbol(json["t"]);
-    i.setLast(json["l_cur"]);
-    i.setChange(json["c"]);
-    i.setChangePercent(json["cp"]);
-    i.setHigh(json["hi"]);
-    i.setLow(json["lo"]);
+    i.setSymbol(quote["symbol"]);
+    i.setLast(quote["latestPrice"]);
+    i.setChange(quote["change"]);
+    i.setChangePercent(quote["changePercent"]);
+    i.setHigh(quote["high"]);
+    i.setLow(quote["low"]);
 
     instruments.insert(i);
   }

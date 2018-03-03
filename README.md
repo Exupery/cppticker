@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/Exupery/cppticker.svg)](https://travis-ci.org/Exupery/cppticker)
 # C++Ticker
 
-Command line stock ticker. Uses Google's Finance API to show information about US stocks and indices.
+Command line stock ticker. Uses [IEX's API](https://iextrading.com/developer/) to show information about US stocks and indices (via their ETFs).
 
 ## Displayed data for each stock/index
 
@@ -12,13 +12,11 @@ Command line stock ticker. Uses Google's Finance API to show information about U
 
 ## Showing additional symbols
 
-Launching the program with no arguments will default to showing the Dow Jones Industrial Average, the S&P 500, and QQQ (representing the Nasdaq-100). Additional stocks can be shown by including the symbols as arguments (separated by spaces). These are not case sensitive and there is currently no [practical] limit to how many you can add.
-
-Stock and ETF symbols will be the same as their listed tickers, indices will need to match the Google designated symbol (i.e. [.INX](https://www.google.com/finance?q=INDEXSP:.INX) for the S&P 500) which can be found by looking up the desired index on [Google Finance](https://www.google.com/finance).
+Launching the program with no arguments will default to showing the ETFs tracking the Dow Jones Industrial Average (`DIA`), the S&P 500 (`SPY`), and the Nasdaq-100 (`QQQ`). Additional stocks can be shown by including the symbols as arguments (separated by spaces). These are not case sensitive and there is a limit of 100 symbols.
 
 ## Setting the update interval
 
-The default update interval is set to 15 minutes between update polling, with two seconds between each stock/index displaying. If a different polling interval is desired this should be included in the arguments as a number. Arguments can be ordered in any way (the interval can be placed before, after, or between any symbols entered). The update interval should be entered in minutes, this can include fractional minutes (i.e. 1.5 would set the interval to 90 seconds). It is not possible to set an update interval less than one minute due to Google's rate limiting.
+The default update interval is set to 15 minutes between update polling, with two seconds between each stock/index displaying. If a different polling interval is desired this should be included in the arguments as a number. Arguments can be ordered in any way (the interval can be placed before, after, or between any symbols entered). The update interval should be entered in minutes, this can include fractional minutes (i.e. 1.5 would set the interval to 90 seconds). It is not possible to set an update interval less than one minute.
 
 ## Compiling
 
